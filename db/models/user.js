@@ -2,6 +2,7 @@
 const { Model, Sequelize } = require("sequelize");
 const sequelize = require("../../config/database");
 const bcrypt = require("bcrypt");
+const AppError = require("../../utils/app_error");
 
 module.exports = sequelize.define(
   "user",
@@ -34,7 +35,10 @@ module.exports = sequelize.define(
           const hashedPassword = bcrypt.hashSync(value, 10);
           this.setDataValue("password", hashedPassword); // Before the data is saved to the database, the password is hashed.
         } else {
-          throw new Error("Password confirmation does not match password");
+          throw new AppError(
+            "Password confirmation does not match password",
+            400
+          );
         }
       },
     },
